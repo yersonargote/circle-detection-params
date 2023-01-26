@@ -5,8 +5,8 @@ import cv2 as cv
 import numpy as np
 from rich import print
 
-from ga import GA
-# from gwo import GWO
+# from ga import GA
+from gwo import GWO
 from params import Params
 from solution import Solution
 
@@ -21,7 +21,7 @@ def canny(filename: str):
 def main():
     np.random.seed(42)
 
-    max_iterations = 10
+    max_iterations = 100
     N = 20
     size = 2
     optimal = 0
@@ -35,30 +35,30 @@ def main():
         edges=edges,
     )
 
-    # gwo: GWO = GWO(
-    #     max_iterations=max_iterations,
-    #     N=N,
-    #     problem=problem,
-    #     population=np.empty(shape=N, dtype=object),
-    #     a=0,
-    #     alpha=Solution(np.zeros(size), np.Inf),
-    #     beta=Solution(np.zeros(size), np.Inf),
-    #     delta=Solution(np.zeros(size), np.Inf),
-    # )
-    # best = gwo.solve()
-    # print(f"{best}")
-    # print(gwo.population)
-
-    ga = GA(
+    gwo: GWO = GWO(
+        max_iterations=max_iterations,
         N=N,
-        generations=max_iterations,
         problem=problem,
         population=np.empty(shape=N, dtype=object),
-        opponents=2,
+        a=0,
+        alpha=Solution(np.zeros(size), np.Inf),
+        beta=Solution(np.zeros(size), np.Inf),
+        delta=Solution(np.zeros(size), np.Inf),
     )
-    best = ga.solve()
+    best = gwo.solve()
     print(f"{best}")
-    print(ga.population)
+    print(gwo.population)
+
+    # ga = GA(
+    #     N=N,
+    #     generations=max_iterations,
+    #     problem=problem,
+    #     population=np.empty(shape=N, dtype=object),
+    #     opponents=2,
+    # )
+    # best = ga.solve()
+    # print(f"{best}")
+    # print(ga.population)
 
 
 if __name__ == "__main__":

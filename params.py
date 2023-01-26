@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from time import perf_counter
 
 import numpy as np
 
@@ -7,6 +6,10 @@ from circle import CircleDetection
 from gwo import GWO
 from problem import Problem
 from solution import Solution
+
+# from time import perf_counter
+
+
 
 
 @dataclass
@@ -47,8 +50,8 @@ class Params(Problem):
             beta=Solution(np.zeros(size), np.Inf),
             delta=Solution(np.zeros(size), np.Inf),
         )
-        start = perf_counter()
+        # start = perf_counter()
         best = gwo.solve()
-        end = perf_counter()
-        time = end - start
-        return (0.8 * best.fitness) + (0.2 * time) / 2
+        # end = perf_counter()
+        # time = end - start
+        return best.fitness
