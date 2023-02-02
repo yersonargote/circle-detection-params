@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """GWO-CircleDetection.ipynb"""
 
+import random
+
 import cv2 as cv
 import numpy as np
 from rich import print
@@ -20,8 +22,9 @@ def canny(filename: str):
 
 def main():
     np.random.seed(42)
+    random.seed(42)
 
-    max_iterations = 100
+    max_iterations = 50
     N = 20
     size = 2
     optimal = 0

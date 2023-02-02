@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from time import perf_counter
 
 import numpy as np
 
@@ -7,23 +8,19 @@ from gwo import GWO
 from problem import Problem
 from solution import Solution
 
-# from time import perf_counter
-
-
-
 
 @dataclass
 class Params(Problem):
     edges: np.ndarray
 
     def init(self) -> np.ndarray:
-        N = np.random.randint(3, 200)
-        max_iterations = np.random.randint(1, 1000)
+        N = np.random.randint(3, 80)
+        max_iterations = np.random.randint(1, 400)
 
         return np.array([N, max_iterations])
 
     def evaluate(self, cells: np.ndarray) -> float:
-        N, max_iterations = np.int32(cells)
+        N, max_iterations = np.int16(cells)
         if N < 3:
             N = 3
         if max_iterations < 1:
@@ -50,8 +47,8 @@ class Params(Problem):
             beta=Solution(np.zeros(size), np.Inf),
             delta=Solution(np.zeros(size), np.Inf),
         )
-        # start = perf_counter()
+        start = perf_counter()
         best = gwo.solve()
-        # end = perf_counter()
-        # time = end - start
-        return best.fitness
+        end = perf_counter()
+        time = end - start
+        return 0.9 * best.fitness + 0.1 * time

@@ -1,3 +1,4 @@
+from copy import deepcopy
 from dataclasses import dataclass
 
 import numpy as np
@@ -19,12 +20,17 @@ class GWO:
     beta: Solution
     delta: Solution
 
+    def init_population(self):
+        for i in range(self.N):
+            self.population[i] = self.init_wolf()
+
     def init_wolf(self):
         cells = self.problem.init()
         fitness = self.problem.evaluate(cells)
         return Solution(cells=cells, fitness=fitness)
 
     def update_alpha_beta_delta(self):
+        self.population = np.sort(self.population)
         self.alpha = self.population[0]
         self.beta = self.population[1]
         self.delta = self.population[2]
@@ -52,24 +58,22 @@ class GWO:
             D_delta = np.abs(C3 * self.delta.cells - self.population[i].cells)
             X3 = self.delta.cells - A3 * D_delta
 
-            self.population[i].cells = np.around((X1 + X2 + X3) / 3)
+            self.population[i].cells = (X1 + X2 + X3) // 3
             self.population[i].fitness = self.problem.evaluate(self.population[i].cells)
 
     def solve(self):
-        self.population = np.array(
-            sorted([self.init_wolf() for _ in range(self.N)], reverse=False)
-        )
-        best = self.population[0]
+        self.init_population()
         self.update_alpha_beta_delta()
+        best = deepcopy(self.alpha)
         it = 0
         while it < self.max_iterations:
-            self.a = 2 - it * ((2) / self.max_iterations)
+            self.a = 2 - 2 * np.square(it / self.max_iterations)
+            # self.a = 2 - it * ((2) / self.max_iterations)
             self.update_population()
-            self.population = np.array(sorted(self.population, reverse=False))
             self.update_alpha_beta_delta()
             it += 1
             if self.alpha < best:
-                best = self.alpha
+                best = deepcopy(self.alpha)
             if np.isclose(best.fitness, self.problem.optimal):
                 return best
         return best
